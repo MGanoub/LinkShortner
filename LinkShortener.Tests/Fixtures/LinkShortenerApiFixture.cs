@@ -1,0 +1,51 @@
+﻿using LinkShortner.Data;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.PostgreSql;
+
+namespace LinkShortener.Tests.Fixtures;
+
+public class LinkShortenerApiFixture : WebApplicationFactory<Program>, IAsyncLifetime
+{
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:16")
+        .WithDatabase("linkshortner_test")
+        .WithUsername("test")
+        .WithPassword("test")
+        .Build();
+    
+    public async Task InitializeAsync()
+    {
+        await _postgres.StartAsync();
+        
+        // apply migrations for fresh container
+        using var scope = Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<LinkShortenerContext>();
+        await db.Database.MigrateAsync();
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            // remove if any DbContext registered by real app & point to one in test container
+            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<LinkShortenerContext>));
+            if (descriptor is not null)
+            {
+                services.Remove(descriptor);
+            }
+
+            services.AddDbContext<LinkShortenerContext>(options => options.UseNpgsql(_postgres.GetConnectionString()));
+        });
+    }
+    
+    // Explicit interface implementation satisfies IAsyncLifetime.DisposeAsync() (returns Task)
+    Task IAsyncLifetime.DisposeAsync() => _postgres.DisposeAsync().AsTask();
+    
+    public override async ValueTask DisposeAsync()
+    {
+        await _postgres.DisposeAsync();
+        await base.DisposeAsync();
+    }
+}
