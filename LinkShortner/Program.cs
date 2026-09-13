@@ -1,4 +1,5 @@
 using LinkShortner.Data;
+using LinkShortner.Endpoints;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -20,5 +21,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapUrlEndPoints();
 
 app.Run();
