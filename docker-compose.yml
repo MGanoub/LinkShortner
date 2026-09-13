@@ -1,0 +1,16 @@
+﻿services:
+  postgres:
+    image: postgres:16
+    container_name: linkshortener-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: linkshortener
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: linkshortener
+    ports:
+      - "5433:5432"
+    volumes:
+      - linkshortener-data:/var/lib/postgresql/data
+
+volumes:
+  linkshortener-data:
