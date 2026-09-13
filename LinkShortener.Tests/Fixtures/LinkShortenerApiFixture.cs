@@ -39,7 +39,18 @@ public class LinkShortenerApiFixture : WebApplicationFactory<Program>, IAsyncLif
             services.AddDbContext<LinkShortenerContext>(options => options.UseNpgsql(_postgres.GetConnectionString()));
         });
     }
-    
+
+    public HttpClient CreateClientNoRedirect()
+    {
+        return CreateDefaultClient(new NoRedirectHandler());
+    }
+
+    private class NoRedirectHandler : DelegatingHandler
+    {
+        public NoRedirectHandler() : base(new HttpClientHandler { AllowAutoRedirect = false })
+        {
+        }
+    }
     // Explicit interface implementation satisfies IAsyncLifetime.DisposeAsync() (returns Task)
     Task IAsyncLifetime.DisposeAsync() => _postgres.DisposeAsync().AsTask();
     

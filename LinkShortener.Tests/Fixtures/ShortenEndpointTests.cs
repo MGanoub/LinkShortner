@@ -33,4 +33,16 @@ public class ShortenEndpointTests : IClassFixture<LinkShortenerApiFixture>
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         
     }
+    
+    [Fact]
+    public async Task Shorten_WithPastExpiresAt_Returns400()
+    {
+        var response = await _client.PostAsJsonAsync("/shorten", new
+        {
+            url = "https://example.com",
+            expiresInDays = -1
+        });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
 }
