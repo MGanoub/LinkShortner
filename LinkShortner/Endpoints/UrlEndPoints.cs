@@ -65,9 +65,11 @@ public static class UrlEndPoints
         {
             return Results.StatusCode(StatusCodes.Status410Gone);
         }
-
-        entity.ClickCount++;
-        await db.SaveChangesAsync();
+        
+        // increment clicks in db directly if concurrent clicks happens
+        await db.ShortenedUrls
+            .Where(u => u.ShortCode == code)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(u => u.ClickCount, u => u.ClickCount + 1));
 
         return Results.Redirect(entity.OriginalUrl, permanent: false);
     }
