@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LinkShortener.Tests.Fixtures;
 using LinkShortner.Data;
 using LinkShortner.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LinkShortener.Tests.Fixtures;
+namespace LinkShortener.Tests;
 
 public class RedirectEndPointTests: IClassFixture<LinkShortenerApiFixture>
 {

@@ -12,7 +12,9 @@ public static class UrlEndPoints
 {
     public static void MapUrlEndPoints(this WebApplication app)
     {
-        app.MapPost("/shorten", ShortenUrl).WithName("ShortenUrl");
+        app.MapPost("/shorten", ShortenUrl)
+            .WithName("ShortenUrl")
+            .RequireRateLimiting("ShortenPolicy");
         app.MapGet("/{code}", RedirectToUrl).WithName("RedirectToUrl");
         app.MapGet("/api/urls/{code}", GetUrlInfo).WithName("GetUrlInfo");
         app.MapGet("/api/urls/all", GetAllUrlsInfo).WithName("GetAllUrlsInfo");

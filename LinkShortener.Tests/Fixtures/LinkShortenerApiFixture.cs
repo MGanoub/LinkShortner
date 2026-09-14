@@ -1,7 +1,9 @@
 ﻿using LinkShortner.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
@@ -27,6 +29,15 @@ public class LinkShortenerApiFixture : WebApplicationFactory<Program>, IAsyncLif
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((_, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["RateLimiting:ShortenPermitLimit"] = "10000",
+                ["RateLimiting:ShortenWindowSeconds"] = "60"
+            });
+        });
+        
         builder.ConfigureServices(services =>
         {
             // remove if any DbContext registered by real app & point to one in test container

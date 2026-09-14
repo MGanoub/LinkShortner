@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using LinkShortner.Data;
 using LinkShortner.Endpoints;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,29 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ShortenPolicy", context =>
+    {
+        var config = context.RequestServices.GetRequiredService<IConfiguration>();
+        var permitLimit = config.GetValue<int?>("RateLimiting:ShortenPermitLimit") ?? 10;
+        var windowSeconds = config.GetValue<int?>("RateLimiting:ShortenWindowSeconds") ?? 60;
+        var key = context.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        
+        Console.WriteLine($"[RateLimiter] MARKER999 Key={key} PermitLimit={permitLimit}, WindowSeconds={windowSeconds}");
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = permitLimit,
+                Window = TimeSpan.FromSeconds(windowSeconds),
+                QueueLimit = 0
+            });
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +56,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend"); 
+app.UseRateLimiter();
 app.MapUrlEndPoints();
 
 app.Run();
