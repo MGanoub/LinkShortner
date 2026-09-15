@@ -34,7 +34,9 @@ public class LinkShortenerApiFixture : WebApplicationFactory<Program>, IAsyncLif
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["RateLimiting:ShortenPermitLimit"] = "10000",
-                ["RateLimiting:ShortenWindowSeconds"] = "60"
+                ["RateLimiting:ShortenWindowSeconds"] = "60",
+                ["BaseUrl"] = "https://localhost:5001",
+                ["Cors:AllowedOrigins:0"] = "http://localhost:5173"
             });
         });
         
