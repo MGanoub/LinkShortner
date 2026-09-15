@@ -49,8 +49,12 @@ public static class UrlEndPoints
         };
         db.ShortenedUrls.Add(entity);
         await db.SaveChangesAsync();
-
-        var baseUrl = config["BaseUrl"] ?? "https://localhost:7162";
+        
+        var baseUrl = config["BaseUrl"];
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            return Results.Problem("Server misconfiguration: BaseUrl is not set.", statusCode: 500);
+        }
         var shortUrl = $"{baseUrl}/{code}";
         return Results.Ok(new { shortUrl, code, originalUrl = entity.OriginalUrl, expiresAt = entity.ExpiresAt});
     }

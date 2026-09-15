@@ -32,6 +32,7 @@
       RateLimiting__ShortenPermitLimit: "5"
       RateLimiting__ShortenWindowSeconds: "60"
       BaseUrl: "http://localhost:8080"
+      Cors__AllowedOrigins__0: "http://localhost:5173"
     ports:
       - "8080:8080"
 
