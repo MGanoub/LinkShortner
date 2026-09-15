@@ -11,6 +11,29 @@
       - "5433:5432"
     volumes:
       - linkshortener-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linkshortener"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+  api:
+    build:
+      context: .
+      dockerfile: LinkShortner/Dockerfile
+    container_name: linkshortener-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=linkshortener;Username=linkshortener;Password=devpassword"
+      RateLimiting__ShortenPermitLimit: "5"
+      RateLimiting__ShortenWindowSeconds: "60"
+      BaseUrl: "http://localhost:8080"
+    ports:
+      - "8080:8080"
 
 volumes:
   linkshortener-data:

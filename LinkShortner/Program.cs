@@ -31,7 +31,7 @@ builder.Services.AddRateLimiter(options =>
         var windowSeconds = config.GetValue<int?>("RateLimiting:ShortenWindowSeconds") ?? 60;
         var key = context.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
         
-        Console.WriteLine($"[RateLimiter] MARKER999 Key={key} PermitLimit={permitLimit}, WindowSeconds={windowSeconds}");
+        Console.WriteLine($"[RateLimiter] Key={key} PermitLimit={permitLimit}, WindowSeconds={windowSeconds}");
 
         return RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
