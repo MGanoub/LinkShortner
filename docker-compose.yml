@@ -28,7 +28,11 @@
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=linkshortener;Username=linkshortener;Password=devpassword"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=linkshortener;Username=linkshortener;Password=${POSTGRES_PASSWORD}"
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: "LinkShortener"
+      Jwt__Audience: "LinkShortenerUsers"
+      Jwt__ExpiryMinutes: "60"
       RateLimiting__ShortenPermitLimit: "5"
       RateLimiting__ShortenWindowSeconds: "60"
       BaseUrl: "http://localhost:8080"

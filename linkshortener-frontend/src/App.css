@@ -41,6 +41,39 @@ body {
     margin: 0;
 }
 
+.hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.account button,
+.login-link {
+    background: none;
+    border: 1px solid #C9D2D8;
+    color: var(--ink);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.account button:hover,
+.login-link:hover {
+    border-color: var(--ink);
+}
+
 .shorten-form {
     display: flex;
     flex-direction: column;
@@ -89,6 +122,83 @@ body {
     font-size: 14px;
     margin: 0 0 20px;
     font-weight: 500;
+}
+
+/* --- Auth overlay --- */
+
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(27, 36, 48, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.auth-panel {
+    background: white;
+    border-radius: 10px;
+    padding: 24px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 20px 40px -10px rgba(27, 36, 48, 0.3);
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #E4E9EC;
+}
+
+.auth-tabs button {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+    border-bottom: 2px solid transparent;
+}
+
+.auth-tabs button.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+}
+
+.auth-panel form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth-panel input {
+    padding: 12px 14px;
+    border-radius: 6px;
+    border: 1.5px solid #C9D2D8;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.auth-panel button[type="submit"] {
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    background: var(--ink);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
 }
 
 /* --- Departure board --- */
