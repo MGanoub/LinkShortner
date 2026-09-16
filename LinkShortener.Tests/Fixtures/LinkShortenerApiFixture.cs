@@ -36,7 +36,11 @@ public class LinkShortenerApiFixture : WebApplicationFactory<Program>, IAsyncLif
                 ["RateLimiting:ShortenPermitLimit"] = "10000",
                 ["RateLimiting:ShortenWindowSeconds"] = "60",
                 ["BaseUrl"] = "https://localhost:5001",
-                ["Cors:AllowedOrigins:0"] = "http://localhost:5173"
+                ["Cors:AllowedOrigins:0"] = "http://localhost:5173",
+                ["Jwt:Key"] = "SNbN+Qwckd2YAftWmz6410w/8GWfUW7BWxCBahEn9ag=",
+                ["Jwt:Issuer"] = "LinkShortener",
+                ["Jwt:Audience"] = "LinkShortenerUsers",
+                ["Jwt:ExpiryMinutes"] = "60"
             });
         });
         
