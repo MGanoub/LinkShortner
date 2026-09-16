@@ -11,13 +11,6 @@ interface ShortLink {
     isExpired?: boolean;
 }
 
-interface ShortenResponse {
-    code: string;
-    shortUrl: string;
-    originalUrl: string;
-    expiresAt: string | null;
-}
-
 interface AuthResponse {
     token: string;
     email: string;
