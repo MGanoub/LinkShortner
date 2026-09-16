@@ -8,17 +8,19 @@ namespace LinkShortener.Tests;
 
 public class ShortenEndpointTests : IClassFixture<LinkShortenerApiFixture>
 {
-    private readonly HttpClient _client;
+    private readonly LinkShortenerApiFixture _fixture;
 
     public ShortenEndpointTests(LinkShortenerApiFixture fixture)
     {
-        _client = fixture.CreateClient();
+        _fixture = fixture;
     }
 
     [Fact]
     public async Task shorten_withValidUrl_Returns200AndShortCode()
     {
-        var response = await _client.PostAsJsonAsync("/shorten", new {url = "https://example.com"});
+        var client = _fixture.CreateClient();
+        await client.AuthenticateAsync();
+        var response = await client.PostAsJsonAsync("/shorten", new {url = "https://example.com"});
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var body = await response.Content.ReadFromJsonAsync<JsonElement>();
@@ -28,8 +30,9 @@ public class ShortenEndpointTests : IClassFixture<LinkShortenerApiFixture>
     [Fact]
     public async Task Shorten_with_InvalidUrl_Returns400()
     {
-        var response = await _client.PostAsJsonAsync("/shorten", new {url = "not a url"});
-        
+        var client = _fixture.CreateClient();
+        await client.AuthenticateAsync();
+        var response = await client.PostAsJsonAsync("/shorten", new {url = "not a url"});
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         
     }
@@ -37,7 +40,9 @@ public class ShortenEndpointTests : IClassFixture<LinkShortenerApiFixture>
     [Fact]
     public async Task Shorten_WithPastExpiresAt_Returns400()
     {
-        var response = await _client.PostAsJsonAsync("/shorten", new
+        var client = _fixture.CreateClient();
+        await client.AuthenticateAsync();
+        var response = await client.PostAsJsonAsync("/shorten", new
         {
             url = "https://example.com",
             expiresInDays = -1

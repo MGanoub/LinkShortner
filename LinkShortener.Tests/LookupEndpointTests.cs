@@ -26,6 +26,7 @@ public class LookupEndpointTests : IClassFixture<LinkShortenerApiFixture>
     public async Task Lookup_WithValidCode_ReturnsMetadataWithZeroClicks()
     {
         var client = _fixture.CreateClient();
+        await client.AuthenticateAsync();
         var code = await CreateShortLink(client);
 
         var response = await client.GetAsync($"/api/urls/{code}");
@@ -50,6 +51,7 @@ public class LookupEndpointTests : IClassFixture<LinkShortenerApiFixture>
     public async Task ClickCount_IncrementsAfterRedirectVisit()
     {
         var setupClient = _fixture.CreateClient();
+        await setupClient.AuthenticateAsync();
         var code = await CreateShortLink(setupClient, "https://example.com/click-count-test");
 
         var redirectClient = _fixture.CreateClientNoRedirect();

@@ -17,6 +17,7 @@ public class RateLimitingTests : IClassFixture<RateLimitedApiFixture>
     public async Task Shorten_ExceedingLimit_Returns429()
     {
         var client = _fixture.CreateClient();
+        await client.AuthenticateAsync();
         HttpResponseMessage? lastResponse = null;
 
         for (var i = 0; i < 4; i++)

@@ -11,6 +11,7 @@ public class LinkShortenerContext : DbContext
     }
     
     public DbSet<ShortenedUrl> ShortenedUrls => Set<ShortenedUrl>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,7 +22,18 @@ public class LinkShortenerContext : DbContext
                 entity.Property(e => e.ShortCode).IsRequired().HasMaxLength(10);
                 entity.Property(e => e.OriginalUrl).IsRequired();
 
-            }
-        );
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            });
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Email).IsUnique();
+            entity.Property(e => e.Email).IsRequired().HasMaxLength(256);
+            entity.Property(e => e.PasswordHash).IsRequired();
+        });
     }
 }

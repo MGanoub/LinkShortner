@@ -29,6 +29,7 @@ public class RedirectEndPointTests: IClassFixture<LinkShortenerApiFixture>
     public async Task Redirect_WithValidCode_Returns302ToOriginalUrl()
     {
         var setupClient = _fixture.CreateClient();
+        await setupClient.AuthenticateAsync();
         var code = await CreateShortLink(setupClient, "https://example.com/valid-code-test");
         var redirectClient = _fixture.CreateClientNoRedirect();
         var response = await redirectClient.GetAsync($"{code}");
@@ -53,12 +54,21 @@ public class RedirectEndPointTests: IClassFixture<LinkShortenerApiFixture>
         using (var scope = _fixture.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<LinkShortenerContext>();
-
+            
+            var user = new User
+            {
+                Email = $"expiry-test-{Guid.NewGuid():N}@example.com",
+                PasswordHash = "not-used-in-this-test"
+            };
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+            
             db.ShortenedUrls.Add(new ShortenedUrl
             {
                 ShortCode = code,
                 OriginalUrl = "https://example.com/already-expired",
-                ExpiresAt = DateTime.UtcNow.AddDays(-1) // already in the past
+                ExpiresAt = DateTime.UtcNow.AddDays(-1), // already in the past
+                UserId = user.Id
             });
 
             await db.SaveChangesAsync();

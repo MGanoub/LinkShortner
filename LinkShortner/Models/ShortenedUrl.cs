@@ -17,4 +17,8 @@ public class ShortenedUrl
     public DateTime? ExpiresAt { get; set; }
 
     public int ClickCount { get; set; } = 0;
+    
+    public int UserId { get; set; }
+    
+    public User? User { get; set; }
 }
