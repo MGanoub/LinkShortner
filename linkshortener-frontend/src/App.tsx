@@ -143,8 +143,7 @@ function App() {
                 setError(errBody.error || 'Something went wrong.');
                 return;
             }
-
-            const data: ShortenResponse = await res.json();
+            await res.json();
             setUrl('');
             setExpiresInDays('');
             await refreshMyLinks(activeToken);
