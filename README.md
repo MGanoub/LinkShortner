@@ -6,7 +6,7 @@ A full-stack URL shortener built with ASP.NET Core, PostgreSQL, and React with a
 
 > Free-tier hosting note: the backend spins down after 15 minutes of inactivity, so the first request after a while may take 30–60 seconds to wake up.
 
-<img width="991" height="906" alt="image" src="https://github.com/user-attachments/assets/2cfdf2ec-1420-4939-b203-5e68d98bfb3d" />
+<img width="890" height="663" alt="image" src="https://github.com/user-attachments/assets/32d6f59c-159b-434b-a09c-3a512374f38c" />
 
 ## Features
 
